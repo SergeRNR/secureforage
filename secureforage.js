@@ -1,6 +1,10 @@
-'use strict';
+!function ( global ) {
+    'use strict';
 
-window.secureforage = (function(){
+    if (typeof localforage === 'undefined') {
+        throw new Error('SecureForage requires localForage')
+    }
+
     var config = { delimiter: '.$$' },
         pwd;
 
@@ -87,14 +91,16 @@ window.secureforage = (function(){
         return localforage.clear(cb);
     };
 
-    (function init () {
-        pwd = prompt('Please enter your password');
-    })();
+    var init = function (user_pwd) {
+        pwd = user_pwd;
+    };
 
-    return {
+    global.secureforage = {
         getItem: getItem,
         setItem: setItem,
         removeItem: removeItem,
-        clear: clear
+        clear: clear,
+        init: init
     };
-})();
+
+}( this );
